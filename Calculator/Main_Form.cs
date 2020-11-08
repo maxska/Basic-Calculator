@@ -9,58 +9,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
-//OBS: hittade symbol för denna knappen EraseButton på:
-// https://en.wikipedia.org/wiki/Wingdings :
-
-
-/// "111x2,,3" kan skrivas in...
-/// 
-
-
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-//       måste se till att man inte kan skriva in "1,x2" eller "2+,3"
-// eller "2+,3,="
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-
-//////////////////EXCEPTION:
-//får en exception unhandled när jag klickar på typ erasebutton när ioBox är empty
-
-
-
-
-//if(ioBox.Text.Length != 0) 
-
-//Ska jag fixa så att man inte kan skriva flera nollor om den 
-// siffran som precis skrevs är en nolla, dvs man inte kan skriva
-// 00000, men kan kan skriva 10000
-
-
-//private bool ContainsOnly()
-//{
-//    return false;
-//}
+//##########################################
+//Calculator
+//##########################################
 
 
 namespace Calculator
 {
-    public partial class Form1 : Form
+    public partial class Main_Form : Form
     {
-        public Form1()
+        public Main_Form()
         {
             InitializeComponent();
 
             ToggleOperatorButtons(false); //denna måste köras direkt när programmet startas
             CommaButton.Enabled = false; //denna måste köras direkt när programmet startas
+            EqualsButton.Enabled = false;
         }
-
-
-
 
         //====================================================================
         //=======================   NUMBER BUTTONS     =======================
@@ -160,17 +125,19 @@ namespace Calculator
             ToggleAllButtons(true);
             ToggleOperatorButtons(false);
             CommaButton.Enabled = false;
+            EqualsButton.Enabled = false;
         }
 
         private void EraseButton_Click(object sender, EventArgs e)
         {
             if(ioBox.Text.Length > 0)
             {
-                string before = ioBox.Text;
+                string before = ioBox.Text; //skapar en string med värdet före funktionen anropats...
 
-                string after = before.Substring(0, before.Length - 1);
+                //skaper en string som innehåller allt som before för, utom sista char:en:
+                string after = before.Substring(0, before.Length - 1);  
 
-                ioBox.Text = after;
+                ioBox.Text = after; //uppdaterar ioBox till "after"-texten
 
                 if(NumberOfOperators(before) > 1)
                 {
@@ -212,14 +179,18 @@ namespace Calculator
             op = GetNonNumber(inText); //ger operatorn som står i ioBox
 
             //metoden Split delar upp en string i en array, 
-            // med platsen delad med den char som anges i inparametern:
+            // med platsen delad av den char som anges i inparametern, op:
             numbers = inText.Split(op);
 
             try
             {
-                first = double.Parse(numbers[0  ]);
-                second = double.Parse(numbers[1]);
+                //MessageBox.Show("OP ============== " + op);
+                //MessageBox.Show("NUMBERS ===== " + numbers[0] + ",,,,, " + numbers[1] );
 
+                first = double.Parse( numbers[0] );
+                second = double.Parse( numbers[1] );
+
+                //Vi kollar var op har fått för värde, och beräknar result utifrån operatorn op:
                 if (op == '+')
                     result = first + second;
                 else if (op == '-')
@@ -228,32 +199,42 @@ namespace Calculator
                     result = first * second;
                 else if (op == '/')
                     result = first / second;
+                else if (op == '?') //op fås från GetNonNumber(), som returnerar '?' om ingen operator hittades:
+                {
+                    MessageBox.Show("COULDN'T get Operator...");
+                    result = 0.0;
+                }
                 else
-                    MessageBox.Show("ERROR WHILE CHOOSING OPERATOR....");
+                    MessageBox.Show("ERROR when trying to choose operator...");
             }
             catch
             {
-                MessageBox.Show("EXCEPTION: couldnt do double.Parse... ");
+                MessageBox.Show("EXCEPTION: didn't find 2 operands...");
             }
 
-            ioBox.Text = $"{result}";
-
-            ToggleAllButtons(false);
+            ioBox.Text = $"{result}"; //upptaterar texten i ioBox.
+            ToggleAllButtons(false); //sätter .Enabled på alla buttons förutom EqualsButton, till false.
         }
 
 
 
 
         //==========================================================================================
-        //=======================    BUTTON EVENTS       ===========================================
+        //=======================     EVENTS       ===========================================
         //==========================================================================================
 
+        //denna funktion dubbelkollar en del saker varje gång ioBox uppdateras...
+        // Det har främst att göra med att vissa knappar inte ska kunna klickas 
+        //  under vissa förhållanden:
         private void ioBox_TextChanged(object sender, EventArgs e)
         {
-            if (ioBox.Text.Length == 0)
+            //om ioBox är tomt så ska man inte kunna klicka på en operator eller komma-tecken:
+            if (ioBox.Text.Length == 0) 
             {
                 ToggleOperatorButtons(false);
                 CommaButton.Enabled = false;
+                EqualsButton.Enabled = false;
+
             }
             else if (ioBox.Text.Length == 1)
             {
@@ -262,77 +243,100 @@ namespace Calculator
             }
 
 
-            //       måste se till att man inte kan skriva in "1,x2" eller "2+,3"
-            // eller "2+,3,="
-
-
-
-
-            //if( CommaExists(ioBox.Text) )
-            //{
-            //}
-
-            //if( CommaAndOperatorExists(ioBox.Text) )
-            //{ 
-            //}
-
-
-            if (ioBox.Text.Length >= 1) //certain of these can only be checked if Length is > 0:
+            //kontrollera enbart följande egenskaper OM det faktiskt finns text i ioBox:
+            if (ioBox.Text.Length >= 1)
             {
+                //Sista tecket är en siffra OCH två kommatecken existerar EJ:
                 if (LastWasNumber(ioBox.Text) && !TwoCommasExist(ioBox.Text))
                 {
-                    //MessageBox.Show("Line 364");
-
-                    ToggleOperatorButtons(true);
-                    CommaButton.Enabled = true;
+                    ToggleOperatorButtons(true); 
+                    CommaButton.Enabled = true; //då ska man kunna sätta in ","
                 }
 
                 if (LastWasOperator(ioBox.Text))
                 {
-                    CommaButton.Enabled = false;
+                    CommaButton.Enabled = false; //då ska man INTE kunna sätta in ","
+                    EqualsButton.Enabled = false; //då ska man INTE kunna klicka på "="
                 }
 
                 if (LastWasComma(ioBox.Text))
                 {
-                    ToggleOperatorButtons(false);
+                    ToggleOperatorButtons(false); //då ska man INTE kunna sätta klicka på operatorer, behövs en till siffra
+                    EqualsButton.Enabled = false; //då ska man INTE kunna klicka på "="
+                    CommaButton.Enabled = false; //då ska man INTE kunna sätta in ","
                 }
 
-                if (OperatorExists(ioBox.Text))
+                if (OperatorExists(ioBox.Text)) //man ska alltid bara kunna skriva in högst en operator:
                 {
                     ToggleOperatorButtons(false);
                 }
 
-                if (TwoCommasExist(ioBox.Text))
+                if (TwoCommasExist(ioBox.Text)) //om två st "," existerar:
                 {
-                    CommaButton.Enabled = false;
+                    CommaButton.Enabled = false; //då ska man INTE kunna sätta in "," för vi har alltid högst två operander.
                 }
 
-                if (CommaExists(ioBox.Text) && !CommaAndOperatorExists(ioBox.Text))
+                //om ett "," existerar OCH det finns INTE (både) "," och operator 
+                // då innebär det att det finns "," men inte finns operator
+                //  vilket innebär att användaren skrivit enligt "123,45" exempelvis:
+                if (CommaExists(ioBox.Text) && !CommaAndOperatorExists(ioBox.Text)) 
                 {
-                    CommaButton.Enabled = false;
+                    CommaButton.Enabled = false; //då ska man ITNE kunna klicka på ","
                 }
 
-                if (OperatorExists(ioBox.Text) && CommaExists(ioBox.Text))
+
+
+
+                if( LastWasComma(ioBox.Text) == false ) //om sista var "," ska man INTE kunna klicka på "="
+                {
+                    EqualsButton.Enabled = false;
+
+                }
+
+                if (LastWasOperator(ioBox.Text) == false) //om sista var en operator ska man INTE kunna klicka på "="
+                {
+                    EqualsButton.Enabled = false; 
+
+                }
+
+                if ( LastWasNumber(ioBox.Text) == true) //om sista var en siffra SKA man kunna klicka på "="
+                {
+                    EqualsButton.Enabled = true;
+
+                }
+
+                
+                if (OperatorExists(ioBox.Text) && CommaExists(ioBox.Text)) //om operator existerar och ",":
                 {
                     char op = GetNonNumber(ioBox.Text); //hämtar operator 
+                    string f; //operand 1 (first)
+                    string s; //operand 2 (second)
 
                     string[] textSplit = ioBox.Text.Split(op);
 
-                    if (textSplit.Length > 0)
+                    try
                     {
-                        if (CommaExists(textSplit[1]))
+                        f = textSplit[0];
+                        s = textSplit[1];
+
+                        if (textSplit.Length > 0)
                         {
-                            //då finns två (av maximalt två) kommatecken utplacerat:
-                            CommaButton.Enabled = false;
+                            if (CommaExists(s)) //denna kollar om det finns "," i andra operanden
+                            {
+                                //då finns två (av maximalt två) kommatecken utplacerat:
+                                CommaButton.Enabled = false;
+                            }
                         }
                     }
+                    catch
+                    {
+                        MessageBox.Show("EXCEPTION - Couldn't parse double on line 352 ca...");
+                    }
+
                 }
             }
 
-            if (ioBox.Text.Length == 0)
-            {
-                CommaButton.Enabled = false;
-            }
+
 
         }
 
@@ -340,16 +344,17 @@ namespace Calculator
 
 
         //====================================================================
-        //=======================   EXTRA METHODS      =======================
+        //=======================   EXTRA FUNCTIONS      =======================
         //====================================================================
 
+        //returnerar antalet operatorer:
         private int NumberOfOperators(string inText)
         {
-            int counter = 0;
+            int counter = 0; //räknar antalet operander som hittas i inText.
 
             for (int i = 0; i < inText.Length; i++)
             {
-                if( IsNumber(inText[i]) == false )
+                if( IsNumber(inText[i]) == false ) //om inte nummer (inte heller ",") så är det en operand:
                 {
                     counter++;
                 }
@@ -359,7 +364,7 @@ namespace Calculator
         }
 
 
-        //Toggles all operator buttons to the value of val
+        //Sätter alla operator-butotns till värdet av val (true/false):
         private void ToggleOperatorButtons(bool val)
         {
             PlusButton.Enabled = val;
@@ -368,7 +373,7 @@ namespace Calculator
             DivButton.Enabled = val;
         }
 
-        //Toggles (almost) all buttons to the value of val
+        //Sätter alla operator-butotns till värdet av val (true/false):
         private void ToggleAllButtons(bool val)
         {
             PlusButton.Enabled = val;
@@ -394,7 +399,8 @@ namespace Calculator
             CommaButton.Enabled = val;
         }
 
-        //returns the char of the first character that is non-number nor is it a ",":
+
+        //returnerar char:en av första bokstaven som är icke-tal och inte heller är en ",":
         private char GetNonNumber(string text)
         {
             char current;
@@ -409,11 +415,15 @@ namespace Calculator
                 }
             }
 
-            MessageBox.Show("ERROR: couldn't return char in getNonNumber()... returning '?'...");
+            //MessageBox.Show(" XYZ ");
+
+            //MessageBox.Show("ERROR: couldn't return char in getNonNumber()... returning '?'...");
             return '?';
         }
 
-        //returns true if the char sent in is a number or a ",":
+
+
+        //returnerar true om den char som skickats in (c) är ett tal eller en ",":
         private bool IsNumber(char c) //including "," (comma)
         {
             if(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' 
@@ -425,7 +435,9 @@ namespace Calculator
             return false;
         }
 
-        //returns true if a "," exists in inText:
+
+
+        //returnerar true om "," finns inuti string:en inText:
         private bool CommaExists(string inText) 
         {
             for(int i = 0; i < inText.Length; i++)
@@ -439,12 +451,13 @@ namespace Calculator
             return false;
         }
 
-        //returns true if both "," and an operator exists in inText:
+
+        //returnerar true om BÅDE "," OCH en operator finns i string:en inText:
         private bool CommaAndOperatorExists(string inText) 
         {
-            if( CommaExists(inText) )
+            if( CommaExists(inText) ) //testar först så att "," existerar:
             {
-                if (OperatorExists(inText))
+                if (OperatorExists(inText)) //testar sen om operator existerar:
                 {
                     return true;
                 }   
@@ -454,7 +467,7 @@ namespace Calculator
         }
 
 
-        //returns true if an operator exists in inText:
+        //returnerar true om det finns en operator i inText:
         private bool OperatorExists(string inText)
         {
             for(int i = 0; i < inText.Length; i++)
@@ -469,10 +482,12 @@ namespace Calculator
             return false;
         }
 
-        //returns true if last character (ór the one to the right) is a comma (,)
+
+        //Returnerar true om den sista char:en (den längst till höger i ioBox) är en ",":
         private bool LastWasComma(string inText)
         {
-            if( inText[ inText.Length - 1 ] == ',' )
+            //kollar om på sista plats i inText finns ett ",", returnar true om ja:
+            if ( inText[ inText.Length - 1 ] == ',') 
             {
                 return true;
             }
@@ -480,9 +495,11 @@ namespace Calculator
             return false;
         }
 
-        //returns true if last character (or the one to the right) is an operator (+ - x /):
+
+        //returnerar true om den sista char:en (den längst till höger i ioBox) är en operaotor (+ - x /):
         private bool LastWasOperator(string inText) //Operator: + - x /.  "," är inte en operator
         {
+            //kollar om på sista plats i inText finns en ICKE-siffra (inte heller ","):
             if ( IsNumber(inText[inText.Length - 1])  == false) //om inte nummer (inkl , ) så är det operator
             {
                 return true;
@@ -492,22 +509,24 @@ namespace Calculator
         }
 
 
-        //returns true if the last character (or the one to the right) is a number (digit) (0-9) 
-        // ("," not included in numbers here):
+        //returnerar true om den sista char:en (den längst till höger i ioBox) är ett tal (0-9=
+        // OBS: "," är inte inkluderat i tal här:
         private bool LastWasNumber(string inText) 
         {
+            //kollar om på sista plats i inText är en siffra, som samtidigt INTE är ett kommatecken:
             if ( IsNumber(inText[inText.Length - 1]) && (LastWasComma(inText) == false) ) //check that its not a ,
             {
-                return true;
+                return true;//
             }
 
             return false;
         }
 
-        //returns true if two commas (,) exists in the ioBox.Text. If so, then CommaButton should be disabled:
+
+        //returnerar true om två st "," finns ioBox. Om ja så kan CommaButton sättas till .Enabled = false
         private bool TwoCommasExist(string inText)
         {
-            int counter = 0;
+            int counter = 0; //räknar antalet ","
 
             for(int i = 0; i < inText.Length; i++)
             {
@@ -517,20 +536,18 @@ namespace Calculator
                 }
             }
 
-            if(counter >= 2)
+            if(counter >= 2) //om counter är 2 (eller större) returneras true.
             {
                 return true;
             }
 
             return false;
         }
-
-
-
-
-
-
-
-
     }
+
+
+
+
+
+
 }

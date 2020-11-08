@@ -26,3 +26,13 @@ C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator_maxsk
 C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator_maxskan100\Calculator\obj\Debug\Calculator.csproj.CoreCompileInputs.cache
 C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator_maxskan100\Calculator\obj\Debug\Calculator.exe
 C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator_maxskan100\Calculator\obj\Debug\Calculator.pdb
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\bin\Debug\Calculator.exe.config
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\bin\Debug\Calculator.exe
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\bin\Debug\Calculator.pdb
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\obj\Debug\Calculator.csprojAssemblyReference.cache
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\obj\Debug\Calculator.Main_Form.resources
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\obj\Debug\Calculator.Properties.Resources.resources
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\obj\Debug\Calculator.csproj.GenerateResource.cache
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\obj\Debug\Calculator.csproj.CoreCompileInputs.cache
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\obj\Debug\Calculator.exe
+C:\Users\maxsk\OneDrive\Dokument\D\Distans VT 2020\GIT_NOV_2020\Calculator\Basic-Calculator\Calculator\obj\Debug\Calculator.pdb
