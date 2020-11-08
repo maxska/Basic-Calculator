@@ -198,23 +198,36 @@ namespace Calculator
                 second = double.Parse(numbers[1]);
 
                 // Checks the value of op, and uses operand to get result:
-                if (op == '+')
-                    result = first + second;
-                else if (op == '-')
-                    result = first - second;
-                else if (op == 'x')
-                    result = first * second;
-                else if (op == '/')
-                    result = first / second;
-                else if (op == '?')
-                { 
-                    // op is obtained from GetNonNumber, which returns '?' if no 
-                    // operand was found: 
-                    MessageBox.Show("COULDN'T get Operator...");
-                    result = 0.0;
+
+                switch (op)
+                {
+                    case '+':
+                        result = first + second;
+                        break;
+
+                    case '-':
+                        result = first - second;
+                        break;
+
+                    case 'x':
+                        result = first * second;
+                        break;
+
+                    case '/':
+                        result = first / second;
+                        break;
+
+                    case '?':
+                        // op is obtained from GetNonNumber, which returns '?' if no 
+                        // operand was found: 
+                        MessageBox.Show("COULDN'T get Operator...");
+                        result = 0.0;
+                        break;
+
+                    default:
+                        MessageBox.Show("ERROR when trying to choose operator...");
+                        break;
                 }
-                else
-                    MessageBox.Show("ERROR when trying to choose operator...");
             }
             catch
             {
@@ -226,7 +239,6 @@ namespace Calculator
             // Sets .Enabled on all buttons except EqualsButton, to false.
             ToggleAllButtons(false);
         }
-
 
 
 
@@ -386,7 +398,7 @@ namespace Calculator
 
             for (int i = 0; i < inText.Length; i++)
             {
-                if( IsNumber(inText[i]) == false ) //om inte nummer (inte heller ",") så är det en operand:
+                if(IsNumber(inText[i]) == false) //om inte nummer (inte heller ",") så är det en operand:
                 {
                     counter++;
                 }
