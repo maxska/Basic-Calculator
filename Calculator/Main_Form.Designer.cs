@@ -257,7 +257,7 @@
             // B5
             // 
             this.B5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.B5.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.B5.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
             this.B5.Location = new System.Drawing.Point(162, 309);
             this.B5.Name = "B5";
             this.B5.Size = new System.Drawing.Size(153, 148);
@@ -403,13 +403,13 @@
             this.ioBox.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ioBox.TextChanged += new System.EventHandler(this.ioBox_TextChanged);
             // 
-            // Form1
+            // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(645, 915);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "Form1";
+            this.Name = "Main_Form";
             this.Text = "Calculator";
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
